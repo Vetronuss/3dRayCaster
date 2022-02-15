@@ -8,9 +8,9 @@ class Camera
     this.ang = ang;
     this.minAng = ang-this.fov/2
     this.maxAng = ang+this.fov/2
-    this.rayAmount = 90;
+    this.rayAmount = 200;
     this.speed = 10;
-    this.lookSpeed = 0.02
+    this.lookSpeed = 0.04
     
     
     this.rays = [];
@@ -36,31 +36,25 @@ class Camera
     //movement
     if (keyIsDown(65))//a
     {
-      this.x-=this.speed
+      this.ang-=this.lookSpeed
     }
     if (keyIsDown(87))//w
     {
-      this.y-=this.speed
+      this.x+=cos(this.ang)
+      this.y+=sin(this.ang)
     }
     if (keyIsDown(68))//d
     {
-      this.x+=this.speed
+      this.ang+=this.lookSpeed
     }
     if (keyIsDown(83))//s
     {
-      this.y+=this.speed
+      this.x-=cos(this.ang)
+      this.y-=sin(this.ang)
     }
-    
-    //look controls
-    if (keyIsDown(81))//q
-    {
-      this.ang-=this.lookSpeed
-    }
+
       
-    if (keyIsDown(69))//d
-    {
-      this.ang+=this.lookSpeed
-    }
+    
   }
   
   draw(debug)
@@ -75,4 +69,60 @@ class Camera
     }
     pop();
   }
+  
+  draw3d()
+  {
+    
+    
+    
+    
+    
+    for (var i = 0; i < this.rays.length; i++)
+    {
+      this.rays[i].update();
+      this.rays[i].draw();
+    }
+    push();
+    noStroke()
+    
+    //sky and ground
+    var skyDetail = 10;
+    for (var s = 0; s < height/2; s+=skyDetail)
+    {
+      fill(lerpColor(color('cyan'),color('blue'),s/height/1.9))
+      rect(0,s,width,skyDetail);
+    }
+    //97, 69, 42,    87, 65, 44
+    for (var s = height/2; s < height; s+=skyDetail)
+    {
+      fill(lerpColor(color(97*1.2, 69*1.2, 42*1.2),color(87, 65, 44),map(s,height/2,height,0,1)))
+      rect(0,s,width,skyDetail+2);
+    }
+    
+    //walls
+    
+     for (var i = 0; i < this.rays.length; i++)
+     {
+       if (this.rays[i].endCoord.length > 0){
+         let od = dist(this.x,this.y,this.rays[i].endCoord[0],this.rays[i].endCoord[1])
+         od = 1/od * 20000; 
+         
+         let d = od
+         let clr = lerpColor(color(0,10,20,240),color(255),d/100)
+         fill(clr)
+      
+         rect(floor(i*(width/this.rayAmount)),height/2-od/2,ceil(width/this.rayAmount),od)
+       }else
+       {
+        fill(0)
+        //rect(i*(width/this.rayAmount),0,width/this.rayAmount,height)
+       }
+     }
+    pop();
+  }
 }
+
+
+
+
+

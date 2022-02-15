@@ -12,13 +12,18 @@ class Wall
   
   
   //draw wall as line
-  draw()
+  draw(size)
   {
+    
+    var fx1 = map(this.x1,0,width,0,size)
+    var fy1 = map(this.y1,0,height,0,size)
+    var fx2 = map(this.x2,0,width,0,size)
+    var fy2 = map(this.y2,0,height,0,size)
+    
     push();
-    stroke(255)
-    fill(255)
+    fill(0)
     strokeWeight(1)
-    line(this.x1,this.y1,this.x2,this.y2)
+    line(fx1,fy1,fx2,fy2)
     pop();
   }
   update(){
